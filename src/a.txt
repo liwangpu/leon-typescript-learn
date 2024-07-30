@@ -1,0 +1,214 @@
+@Schema()
+export class PlatformOrder extends Entity {
+  @Prop()
+  public platform: string;
+  @Prop()
+  public station: string;
+  @Prop()
+  public store: string;
+  /**
+   * 订单创建时间
+   */
+  @Prop()
+  public orderDate: number;
+  /**
+   * 订单完成时间
+   */
+  @Prop()
+  public orderCompleteDate: number;
+  /**
+   * 预计发货时间
+   */
+  @Prop()
+  public estimatedShipOutDate: number;
+  /**
+   * 发货时间
+   */
+  @Prop()
+  public shipTime: number;
+  /**
+   * 订单支付时间
+   */
+  @Prop()
+  public orderPaidTime: number;
+  /**
+   * 订单编号
+   */
+  @Prop()
+  public orderNo: string;
+  /**
+   * 订单状态
+   */
+  @Prop()
+  public orderStatus: string;
+  /**
+   * 取消原因
+   */
+  @Prop()
+  public cancelReason: string;
+  /**
+   * 追踪编号
+   */
+  @Prop()
+  public trackingNumber: string;
+  /**
+   * 退货退款状态
+   */
+  @Prop()
+  public refundStatus: string;
+  /**
+   * 运输选项
+   */
+  @Prop()
+  public shippingOption: string;
+  /**
+   * 装运方式
+   */
+  @Prop()
+  public shipmentMethod: string;
+  /**
+   * 订单金额
+   */
+  @Prop()
+  public price: number;
+  /**
+   * 总金额
+   */
+  @Prop()
+  public totalAmount: number;
+  @Prop()
+  public skuCount: number;
+  @Prop()
+  public productionCount: number;
+  /**
+   * SKU总重量
+   */
+  @Prop()
+  public SKUtotalWeight: number;
+  /**
+   * 订单总重量
+   */
+  @Prop()
+  public orderTotalWeight: number;
+  /**
+   * 买方支付运费
+   */
+  @Prop()
+  public buyerPaidShippingFee: number;
+  /**
+   * 运费回扣估算
+   */
+  @Prop()
+  public shippingRebateEstimate: number;
+  /**
+   * 交易手续费
+   */
+  @Prop()
+  public transactionFee: number;
+  /**
+   * 佣金
+   */
+  @Prop()
+  public commissionFee: number;
+  /**
+   * 服务费
+   */
+  @Prop()
+  public serviceFee: number;
+  /**
+   * 总计
+   */
+  @Prop()
+  public grandTotal: number;
+  /**
+   * 预计运费
+   */
+  @Prop()
+  public estimatedShippingFee: number;
+  /**
+   * 送货地址
+   */
+  @Prop()
+  public deliveryAddress: number;
+  /**
+   * 卖家返佣
+   */
+  @Prop()
+  public sellerRebate: number;
+  /**
+   * 卖家折扣
+   */
+  @Prop()
+  public sellerDiscount: number;
+  /**
+   * 平台返佣
+   */
+  @Prop()
+  public shopeeRebate: number;
+
+  @Prop()
+  public remark: string;
+  @Prop()
+  public tenantId: string;
+  @Prop()
+  public createdDate: number;
+  @Prop()
+  public lastModifiedDate: number;
+  @Prop()
+  public createdBy: string;
+  @Prop()
+  public lastModifiedBy: string;
+  @Prop()
+  public isDeleted: boolean;
+  public platformName: string;
+  public stationName: string;
+  public storeName: string;
+  public productions: PlatformOrderProduction[];
+}
+
+export const PlatformOrderSchema = SchemaFactory.createForClass(PlatformOrder);
+export type PlatformOrderDocument = HydratedDocument<PlatformOrder>;
+
+@Schema()
+export class PlatformOrderProduction extends Entity {
+  @Prop()
+  public orderId: string;
+  /**
+   * 店铺产品
+   */
+  @Prop()
+  public storeProductionId: string;
+  /**
+   * 原价单价
+   */
+  @Prop()
+  public originPrice: number;
+  /**
+   * 交易价格
+   */
+  @Prop()
+  public dealPrice: number;
+  /**
+   * 采购数量
+   */
+  @Prop()
+  public quanity: number;
+  /**
+   * 规格
+   */
+  @Prop()
+  public variationName: string;
+  /**
+   * 退回数量
+   */
+  @Prop()
+  public returnedQuantity: number;
+  @Prop()
+  public remark: string;
+  @Prop()
+  public tenantId: string;
+  public avatar: string;
+  public productionName: string;
+  public productionSKU: string;
+
+}
