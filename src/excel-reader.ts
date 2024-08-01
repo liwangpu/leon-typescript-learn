@@ -1,15 +1,8 @@
 import * as dayjs from 'dayjs';
 import * as Excel from 'exceljs';
 import * as fs from 'fs';
-import { isNil } from 'lodash';
+import { isNil, isArray } from 'lodash';
 
-export interface IDataMapping {
-  [property: string]: string[];
-}
-
-export interface IDataTypeMapping {
-  [property: string]: DataType;
-}
 
 export enum DataType {
   number = 'number',
@@ -17,18 +10,65 @@ export enum DataType {
   date = 'date',
 }
 
+export function ExcelField(props: {
+  title: string | string[],
+  type?: DataType,
+}): PropertyDecorator {
+  const { title, type } = props;
+  return (target: any, key: string) => {
+    if (!title.length) return;
+    const mapping: Map<string, IFieldMetadata> = Reflect.getOwnMetadata('MetadataMapping', target) || new Map<string, IFieldMetadata>();
+    const metadata = mapping.get(key) || {
+      title: [],
+      type: type || DataType.string
+    };
+
+    if (isArray(title)) {
+      metadata.title = title;
+    } else {
+      metadata.title = [title];
+    }
+
+    mapping.set(key, metadata);
+    Reflect.defineMetadata('MetadataMapping', mapping, target)
+  }
+}
+
+interface IFieldMetadata {
+  title: string[];
+  type?: DataType;
+}
+
+export interface DTOConstructor {
+  new(): any;
+}
+
 export interface IReadExcelProps {
   filename: string;
   worksheets?: (number | string)[];
   headerRowIndex: number;
-  dataMapping: IDataMapping;
-  dataTypeMapping?: IDataTypeMapping;
+  DTO: DTOConstructor;
 }
 
 export async function readExcel<T = any>(props: IReadExcelProps): Promise<T[]> {
   const datas: any[] = [];
-  const { filename, worksheets, headerRowIndex, dataMapping, dataTypeMapping } = props;
-  console.log(`filePath:`, filename);
+  const { filename, worksheets, headerRowIndex, DTO } = props;
+  const dataMapping = new Map<string, string[]>();
+  const dataTypeMapping = new Map<string, DataType>();
+
+  // 解析dto元数据
+  (() => {
+    const dto = new DTO();
+    const target = Object.getPrototypeOf(dto);
+    const MetadataMapping: Map<string, IFieldMetadata> = Reflect.getOwnMetadata('MetadataMapping', target);
+
+    MetadataMapping.forEach((metadata, property) => {
+      dataMapping.set(property, metadata.title);
+      dataTypeMapping.set(property, metadata.type);
+    });
+  })();
+
+
   if (isNil(filename)) return datas;
   const workbook = new Excel.Workbook();
   if (!fs.existsSync(filename)) {
@@ -39,17 +79,12 @@ export async function readExcel<T = any>(props: IReadExcelProps): Promise<T[]> {
   // 数据属性和表格列标映射
   const propertyColMap = new Map<number, string>();
   const headerTitlePropertyMap = new Map<string, string>();
-  (() => {
-    const properties = Object.keys(dataMapping);
-    for (const property of properties) {
-      const titles = dataMapping[property] || [];
-      for (const title of titles) {
-        headerTitlePropertyMap.set(title, property);
-      }
+
+  dataMapping.forEach((titles, property) => {
+    for (const title of titles) {
+      headerTitlePropertyMap.set(title, property);
     }
-  })();
-
-
+  });
 
   workbook.eachSheet((sheet, sheetId) => {
     sheet.eachRow((row, rowIndex) => {
@@ -64,7 +99,7 @@ export async function readExcel<T = any>(props: IReadExcelProps): Promise<T[]> {
           const property = headerTitlePropertyMap.get(title);
           propertyColMap.set(colNumber, property);
         });
-        // console.log(`propertyColMap:`, propertyColMap);
+
       } else {
         if (!propertyColMap.size) return;
         const data: Record<string, any> = {};
@@ -72,13 +107,11 @@ export async function readExcel<T = any>(props: IReadExcelProps): Promise<T[]> {
         row.eachCell((cell, colNumber) => {
           if (!propertyColMap.has(colNumber)) return;
           const property = propertyColMap.get(colNumber);
-          const valueType = dataTypeMapping[property] || DataType.string;
+          const valueType = dataTypeMapping.get(property) || DataType.string;
           data[property] = dataTransfer({ value: cell.value, type: valueType });
         });
         datas.push(data);
       }
-
-      // row.eachCell();
 
     });
   });

@@ -1,16 +1,17 @@
 {
-    "compilerOptions": {
-        "noImplicitAny": false,
-        "target": "es6",
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "sourceMap": true,
-        "declarationMap": false,
-        "inlineSources": false,
-        "declaration": false,
-        "stripInternal": true
-    },
-    "include": [
-        "src/**/*.ts"
-    ]
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "target": "es6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "declarationMap": false,
+    "experimentalDecorators": true,
+    "inlineSources": false,
+    "declaration": true,
+    "stripInternal": true
+  },
+  "include": [
+    "src/**/*.ts"
+  ]
 }

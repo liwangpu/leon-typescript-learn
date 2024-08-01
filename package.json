@@ -19,17 +19,19 @@
   },
   "homepage": "https://github.com/liwangpu/leon-typescript-learn#readme",
   "dependencies": {
-    "dayjs": "^1.11.11",
-    "exceljs": "^4.4.0",
-    "moment": "^2.27.0",
+    "axios": "^1.6.0",
     "crypto": "^1.0.1",
     "crypto-js": "^4.2.0",
+    "dayjs": "^1.11.11",
+    "exceljs": "^4.4.0",
     "lodash": "^4.17.21",
-    "axios": "^1.6.0"
+    "moment": "^2.27.0",
+    "reflect-metadata": "^0.2.2"
   },
   "devDependencies": {
     "del": "^5.1.0",
     "gulp": "^4.0.2",
+    "@types/lodash": "^4.17.5",
     "gulp-sourcemaps": "3.0.0",
     "gulp-typescript": "^6.0.0-alpha.1",
     "nodemon": "^1.19.1",

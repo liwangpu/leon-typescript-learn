@@ -1,68 +1,21 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { DataType, readExcel } from './excel-reader';
-
+import { DataType, readExcel, ExcelField } from './excel-reader';
+import "reflect-metadata";
+import { PlatformDTO } from './models';
 // const filename = path.join(__dirname, '../', 'files', '虾皮本土.xlsx');
-const filename = path.join(__dirname, '../', 'files', '虾皮本土1.xlsx');
-// const filename = path.join(__dirname, '../', 'files', 'a.xlsx');
+// const filename = path.join(__dirname, '../', 'files', '虾皮本土1.xlsx');
+const filename = path.join(__dirname, '../', 'files', 'lazada本土.xlsx');
 
-
-const dataMapping = {
-  orderNo: ['Order ID'],
-  orderStatus: ['Order Status'],
-  cancelReason: ['Cancel reason'],
-  refundStatus: ['Return / Refund Status'],
-  trackingNumber: ['Tracking Number*'],
-  shippingOption: ['Shipping Option'],
-  shipmentMethod: ['Shipment Method'],
-  estimatedShipOutDate: ['Estimated Ship Out Date'],
-  shipTime: ['Ship Time'],
-  // xxx: ['Order Creation Date'],
-  orderPaidTime: ['Order Paid Time'],
-  sku: ['SKU Reference No.'],
-  variationName: ['Variation Name'],
-  originPrice: ['Original Price'],
-  dealPrice: ['Deal Price'],
-  quanity: ['Quantity'],
-  returnedQuantity: ['Returned quantity'],
-  sellerRebate: ['Seller Rebate'],
-  sellerDiscount: ['Seller Discount'],
-  shopeeRebate: ['Shopee Rebate'],
-  SKUtotalWeight: ['SKU Total Weight'],
-  orderTotalWeight: ['Order Total Weight'],
-  deliveryAddress: ['Delivery Address'],
-  orderCompleteDate: ['Order Complete Time'],
-  // xxx: [''],
-  // xxx: [''],
-  // xxx: [''],
-  // xxx: [''],
-  // xxx: [''],
-};
-
-const dataTypeMapping = {
-  estimatedShipOutDate: DataType.date,
-  shipTime: DataType.date,
-  orderPaidTime: DataType.date,
-  orderCompleteDate: DataType.date,
-  originPrice: DataType.number,
-  dealPrice: DataType.number,
-  quanity: DataType.number,
-  returnedQuantity: DataType.number,
-  sellerRebate: DataType.number,
-  sellerDiscount: DataType.number,
-  shopeeRebate: DataType.number,
-  orderTotalWeight: DataType.number,
-};
+const p=new PlatformDTO();
 
 
 
 (async () => {
-  const datas = await readExcel({
+  const datas = await readExcel<PlatformDTO>({
     filename,
-    // worksheets: ['orders'],
     headerRowIndex: 1,
-    dataMapping,
-    dataTypeMapping,
+    DTO: PlatformDTO,
   });
   console.log(`datas:`, datas);
 })();
