@@ -4,53 +4,21 @@ import { DataType, readExcel, ExcelField } from './excel-reader';
 import "reflect-metadata";
 import { PlatformDTO } from './models';
 // const filename = path.join(__dirname, '../', 'files', '虾皮本土.xlsx');
-// const filename = path.join(__dirname, '../', 'files', '虾皮本土1.xlsx');
-const filename = path.join(__dirname, '../', 'files', 'lazada本土.xlsx');
+const filename = path.join(__dirname, '../', 'files', '虾皮本土1.xlsx');
+// const filename = path.join(__dirname, '../', 'files', 'lazada本土.xlsx');
 
-const p=new PlatformDTO();
-
-
+// const fn = path.dirname(filename);
+// console.log(`1:`,path.basename(filename));
+// console.log(`2:`,path.dirname(filename));
 
 (async () => {
   const datas = await readExcel<PlatformDTO>({
     filename,
     headerRowIndex: 1,
     DTO: PlatformDTO,
+    outputJsonFile: path.join(__dirname, '../', 'temp', 'output.json'),
   });
-  console.log(`datas:`, datas);
+  // console.log(`datas:`, datas);
+  
+  console.log(`datas count:`, datas.length);
 })();
-
-
-// No of product in order
-// Order Total Weight
-// Voucher Code
-// Seller Voucher
-// Seller Absorbed Coin Cashback
-// Shopee Voucher
-// Bundle Deal Indicator
-// Shopee Bundle Discount
-// Seller Bundle Discount
-// Shopee Coins Offset
-// Credit Card Discount Total
-// Total Amount
-// Buyer Paid Shipping Fee
-// Shipping Rebate Estimate
-// Reverse Shipping Fee
-// Transaction Fee
-// Commission Fee
-// Service Fee
-// Grand Total
-// Estimated Shipping Fee
-// Username (Buyer)
-// Receiver Name
-// Phone Number
-// Delivery Address
-// Town
-// District
-// City
-// Province
-// Country
-// Zip Code
-// Remark from buyer
-// Order Complete Time
-// Note

@@ -1,6 +1,7 @@
 import * as dayjs from 'dayjs';
 import * as Excel from 'exceljs';
 import * as fs from 'fs';
+import * as path from 'path';
 import { isNil, isArray } from 'lodash';
 
 
@@ -48,11 +49,15 @@ export interface IReadExcelProps {
   worksheets?: (number | string)[];
   headerRowIndex: number;
   DTO: DTOConstructor;
+  /**
+   * 输出解析json文件
+   */
+  outputJsonFile?: string;
 }
 
 export async function readExcel<T = any>(props: IReadExcelProps): Promise<T[]> {
   const datas: any[] = [];
-  const { filename, worksheets, headerRowIndex, DTO } = props;
+  const { filename, worksheets, headerRowIndex, DTO, outputJsonFile } = props;
   const dataMapping = new Map<string, string[]>();
   const dataTypeMapping = new Map<string, DataType>();
 
@@ -115,6 +120,16 @@ export async function readExcel<T = any>(props: IReadExcelProps): Promise<T[]> {
 
     });
   });
+
+  if (!isNil(outputJsonFile)) {
+    const outputDir = path.dirname(outputJsonFile);
+    const outputFilename = path.basename(outputJsonFile);
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir);
+    }
+    console.log(`title:`, path.join(outputDir, outputFilename));
+    fs.writeFileSync(path.join(outputDir, outputFilename), JSON.stringify(datas, null, 4), { encoding: 'utf-8', });
+  }
   return datas;
 }
 
