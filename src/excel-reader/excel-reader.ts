@@ -3,42 +3,8 @@ import * as Excel from 'exceljs';
 import * as fs from 'fs';
 import * as path from 'path';
 import { isNil, isArray } from 'lodash';
+import * as ExcelField from './excel-field';
 
-
-export enum DataType {
-  number = 'number',
-  string = 'string',
-  date = 'date',
-}
-
-export function ExcelField(props: {
-  title: string | string[],
-  type?: DataType,
-}): PropertyDecorator {
-  const { title, type } = props;
-  return (target: any, key: string) => {
-    if (!title.length) return;
-    const mapping: Map<string, IFieldMetadata> = Reflect.getOwnMetadata('MetadataMapping', target) || new Map<string, IFieldMetadata>();
-    const metadata = mapping.get(key) || {
-      title: [],
-      type: type || DataType.string
-    };
-
-    if (isArray(title)) {
-      metadata.title = title;
-    } else {
-      metadata.title = [title];
-    }
-
-    mapping.set(key, metadata);
-    Reflect.defineMetadata('MetadataMapping', mapping, target)
-  }
-}
-
-interface IFieldMetadata {
-  title: string[];
-  type?: DataType;
-}
 
 export interface DTOConstructor {
   new(): any;
@@ -59,19 +25,24 @@ export async function readExcel<T = any>(props: IReadExcelProps): Promise<T[]> {
   const datas: any[] = [];
   const { filename, worksheets, headerRowIndex, DTO, outputJsonFile } = props;
   const dataMapping = new Map<string, string[]>();
-  const dataTypeMapping = new Map<string, DataType>();
+  const dataTypeMapping = new Map<string, ExcelField.DataType>();
 
   // 解析dto元数据
   (() => {
     const dto = new DTO();
     const target = Object.getPrototypeOf(dto);
-    const MetadataMapping: Map<string, IFieldMetadata> = Reflect.getOwnMetadata('MetadataMapping', target);
+    const Metadata_Mapping: Map<string, ExcelField.IFieldMetadata> = Reflect.getOwnMetadata('Metadata_Mapping', target);
+    // const Metadata_Mapping: Map<string, IFieldMetadata> = Reflect.getOwnMetadata('Metadata_Flags', target);
 
-    MetadataMapping.forEach((metadata, property) => {
+    Metadata_Mapping.forEach((metadata, property) => {
       dataMapping.set(property, metadata.title);
       dataTypeMapping.set(property, metadata.type);
     });
+
+    console.log(`dto:`, Object.keys(dto));
   })();
+
+  return;
 
 
   if (isNil(filename)) return datas;
@@ -112,7 +83,7 @@ export async function readExcel<T = any>(props: IReadExcelProps): Promise<T[]> {
         row.eachCell((cell, colNumber) => {
           if (!propertyColMap.has(colNumber)) return;
           const property = propertyColMap.get(colNumber);
-          const valueType = dataTypeMapping.get(property) || DataType.string;
+          const valueType = dataTypeMapping.get(property) || ExcelField.DataType.string;
           data[property] = dataTransfer({ value: cell.value, type: valueType });
         });
         datas.push(data);
@@ -133,12 +104,12 @@ export async function readExcel<T = any>(props: IReadExcelProps): Promise<T[]> {
   return datas;
 }
 
-function dataTransfer(props: { value: any, type?: DataType }) {
+function dataTransfer(props: { value: any, type?: ExcelField.DataType }) {
   const { value, type } = props;
   switch (type) {
-    case DataType.number:
+    case ExcelField.DataType.number:
       return Number(value);
-    case DataType.date:
+    case ExcelField.DataType.date:
       if (!value) return null;
       const d = dayjs(value);
       return d.isValid() ? d.valueOf() : null;
