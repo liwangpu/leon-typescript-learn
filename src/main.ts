@@ -7,19 +7,10 @@ import { PlatformDTO } from './models';
 const filename = path.join(__dirname, '../', 'files', '虾皮本土1.xlsx');
 // const filename = path.join(__dirname, '../', 'files', 'lazada本土.xlsx');
 
-// const fn = path.dirname(filename);
-// console.log(`1:`,path.basename(filename));
-// console.log(`2:`,path.dirname(filename));
+// const dto = new PlatformDTO();
 
-
-
-// ExcelField({});
-
-
-// ExcelField.
-
-
-
+// const fields = ExcelField.getFlagFields({ obj: dto, flag: 'production' });
+// console.log(`fields:`, fields);
 
 (async () => {
   const datas = await readExcel<PlatformDTO>({
@@ -30,5 +21,5 @@ const filename = path.join(__dirname, '../', 'files', '虾皮本土1.xlsx');
   });
   // // console.log(`datas:`, datas);
 
-  // console.log(`datas count:`, datas.length);
+  console.log(`datas count:`, datas.length);
 })();

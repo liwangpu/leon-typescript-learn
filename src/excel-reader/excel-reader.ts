@@ -30,19 +30,13 @@ export async function readExcel<T = any>(props: IReadExcelProps): Promise<T[]> {
   // 解析dto元数据
   (() => {
     const dto = new DTO();
-    const target = Object.getPrototypeOf(dto);
-    const Metadata_Mapping: Map<string, ExcelField.IFieldMetadata> = Reflect.getOwnMetadata('Metadata_Mapping', target);
-    // const Metadata_Mapping: Map<string, IFieldMetadata> = Reflect.getOwnMetadata('Metadata_Flags', target);
+    const metadataMapping: Map<string, ExcelField.IFieldMetadata> = ExcelField.getMetadata(dto, ExcelField.ExcelFieldMetadata.metadatas);
 
-    Metadata_Mapping.forEach((metadata, property) => {
+    metadataMapping.forEach((metadata, property) => {
       dataMapping.set(property, metadata.title);
       dataTypeMapping.set(property, metadata.type);
     });
-
-    console.log(`dto:`, Object.keys(dto));
   })();
-
-  return;
 
 
   if (isNil(filename)) return datas;
