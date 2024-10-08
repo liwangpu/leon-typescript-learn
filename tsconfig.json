@@ -1,14 +1,13 @@
 {
     "compilerOptions": {
-        "noImplicitAny": false,
-        "target": "es6",
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "sourceMap": true,
-        "declarationMap": false,
-        "inlineSources": false,
-        "declaration": false,
-        "stripInternal": true
+      "module": "es6",
+      "target": "ES5",
+      "allowJs": true,
+      "moduleResolution": "node",
+      "strict": false,
+      "noImplicitAny": false,
+      "allowSyntheticDefaultImports": true,
+      "experimentalDecorators": true
     },
     "include": [
         "src/**/*.ts"
